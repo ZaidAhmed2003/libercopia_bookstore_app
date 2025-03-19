@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "556037439136",
+    "project_id": "libercopia-book-store-ap-2bb36",
+    "storage_bucket": "libercopia-book-store-ap-2bb36.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556037439136:android:50879749322779576b93c5",
+        "android_client_info": {
+          "package_name": "com.example.libercopia_bookstore_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556037439136-bl5s2b3vtgi5oha0v50c3mt129vook1j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.libercopia_bookstore_app",
+            "certificate_hash": "d7e4191f5c251d96ea1efeab69ab85e95d46f0d7"
+          }
+        },
+        {
+          "client_id": "556037439136-7vgc7g3kuvvknqfhtt5jqtabaal5heqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7zRwujdhHzqZrapu2JusgxcC2dfQ_PeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556037439136-7vgc7g3kuvvknqfhtt5jqtabaal5heqn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "556037439136-9kt2vmti08vebnoj3nedmo2un98r4d6a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.libercopiaBookstoreApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
