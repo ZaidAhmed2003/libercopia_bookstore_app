@@ -76,13 +76,13 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   LSettingsMenuTile(
                     icon: Iconsax.discount_shape,
-                    title: 'My Addresses',
+                    title: 'My Discounts',
                     subtitle: 'List of all discounted coupons',
                     onTap: () {},
                   ),
                   LSettingsMenuTile(
                     icon: Iconsax.notification,
-                    title: 'My Addresses',
+                    title: 'Notifications',
                     subtitle: 'Set any kind of notification message',
                     onTap: () {},
                   ),
