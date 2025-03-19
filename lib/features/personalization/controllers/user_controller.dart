@@ -49,11 +49,12 @@ class UserController extends GetxController {
     try {
       // Refresh User Record
       await fetchUserRecord();
+
       if (user.value.id.isEmpty) {
-        if (userCredential == null) {
+        if (userCredential != null) {
           // Convert Name To First Name and Last Name
           final nameParts = UserModel.nameParts(
-            userCredential!.user!.displayName ?? '',
+            userCredential.user!.displayName ?? '',
           );
           final username = UserModel.generateUsername(
             userCredential.user!.displayName ?? '',

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:libercopia_bookstore_app/common/widgets/appbar/dart/appbar.dart';
 import 'package:libercopia_bookstore_app/common/widgets/texts/section_heading.dart';
+import 'package:libercopia_bookstore_app/features/personalization/screens/address/address.dart';
 
 import '../../../../common/widgets/list_tile/settings_menu_tile.dart';
 import '../../../../common/widgets/list_tile/user_profile_tile.dart';
@@ -54,7 +56,7 @@ class SettingsScreen extends StatelessWidget {
                     icon: Iconsax.safe_home,
                     title: 'My Addresses',
                     subtitle: 'Set Shopping Delivery Address',
-                    onTap: () {},
+                    onTap: () => Get.to(() => const UserAddressScreen()),
                   ),
                   LSettingsMenuTile(
                     icon: Iconsax.shopping_cart,

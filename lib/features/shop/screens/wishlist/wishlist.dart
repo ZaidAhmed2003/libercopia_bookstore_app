@@ -25,7 +25,10 @@ class WishlistScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(padding: EdgeInsets.all(LSizes.defaultSpace)),
+        child: Padding(
+          padding: EdgeInsets.all(LSizes.defaultSpace),
+          child: Column(children: []),
+        ),
       ),
     );
   }

@@ -171,6 +171,7 @@ class AuthenticationRepository extends GetxController {
 
       // Once Sign In, Return the User Credentials
       return await _auth.signInWithCredential(credentials);
+      //
     } on FirebaseAuthException catch (e) {
       throw LFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
