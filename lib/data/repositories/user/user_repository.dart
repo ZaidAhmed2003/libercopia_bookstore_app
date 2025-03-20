@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:libercopia_bookstore_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../features/personalization/models/user_model.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
@@ -13,9 +15,8 @@ import '../../../utils/exceptions/platform_exceptions.dart';
 class UserRepository extends GetxController {
   static UserRepository get instance => Get.find();
 
-  final _cloudinary = CloudinaryPublic('dzqgcvmrb', 'my_preset', cache: false);
-
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final supabase = Supabase.instance.client;
 
   /// Function To save user data to firestore.
   Future<void> saveUserRecord(UserModel user) async {
@@ -108,16 +109,30 @@ class UserRepository extends GetxController {
   }
 
   /// Upload an Image to Cloudinary Storage
-  Future<String> uploadImage(String path, XFile file) async {
+  Future<String?> uploadImage(XFile image) async {
     try {
-      final response = await _cloudinary.uploadFile(
-        CloudinaryFile.fromFile(
-          file.path,
-          resourceType: CloudinaryResourceType.Image,
-          folder: 'Users',
-        ),
-      );
-      return response.secureUrl;
+      final userId = AuthenticationRepository.instance.authUser?.uid ?? '';
+      if (userId.isEmpty) throw 'User not authenticated';
+
+      // Create a unique file path
+      final filePath = '$userId/${DateTime.now().millisecondsSinceEpoch}';
+      final File file = File(image.path);
+
+      // Upload to Supabase Storage
+      await supabase.storage
+          .from('profile-pictures') // Your Supabase bucket name
+          .upload(
+            filePath,
+            file,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
+
+      // Get public URL
+      final String imageUrl = supabase.storage
+          .from('profile-pictures')
+          .getPublicUrl(filePath);
+
+      return imageUrl;
     } on FirebaseException catch (e) {
       throw LFirebaseException(e.code).message;
     } on FormatException catch (_) {
@@ -125,7 +140,7 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw LPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      throw 'Something went wrong. ${e.toString()}';
     }
   }
 }

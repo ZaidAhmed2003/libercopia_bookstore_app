@@ -172,6 +172,7 @@ class UserController extends GetxController {
     }
   }
 
+  /// upload image in cloudinary
   uploadProfilePicture() async {
     try {
       final image = await ImagePicker().pickImage(
@@ -182,25 +183,38 @@ class UserController extends GetxController {
       );
 
       if (image != null) {
-        final imageUrl = await userRepository.uploadImage(
-          'Users/Images/Profile/',
-          image,
+        LFullScreenLoader.openLoadingDialog(
+          'Uploading...',
+          LImages.docerAnimation,
         );
-        // Update User Image Record
-        Map<String, dynamic> json = {'profilePicture': imageUrl};
-        await userRepository.updateSingleField(json);
 
-        user.value.profilePicture = imageUrl;
-        LLoaders.successSnackBar(
-          title: 'Congratulations',
-          message: 'Profile Picture Updated',
-        );
+        // Upload to Supabase
+        final imageUrl = await userRepository.uploadImage(image);
+
+        // Update Firestore
+        if (imageUrl != null) {
+          await userRepository.updateSingleField({'profilePicture': imageUrl});
+          user.update((val) {
+            val?.profilePicture = imageUrl;
+          });
+
+          LLoaders.successSnackBar(
+            title: 'Success',
+            message: 'Profile picture updated',
+          );
+        }
+        // Remove Loader
+        LFullScreenLoader.stopLoading();
       }
     } catch (e) {
       LLoaders.errorSnackBar(
         title: 'Oh Snap!',
         message: 'Something went wrong: $e',
       );
+      // Remove Loader
+      LFullScreenLoader.stopLoading();
+      // Namespace_code error: This error means that you're attempting to access a method or property that doesn't exist in the context where you're trying to use it.
+      // In this case, this is coming from supabase side so we need to check that
     }
   }
 }
