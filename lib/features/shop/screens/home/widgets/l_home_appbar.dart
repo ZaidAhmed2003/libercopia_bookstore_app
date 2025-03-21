@@ -6,7 +6,7 @@ import '../../../../../common/widgets/appbar/dart/appbar.dart';
 import '../../../../../common/widgets/shimmers/shimmer.dart';
 import '../../../../../utils/constants/text_strings.dart';
 import '../../../../personalization/controllers/user_controller.dart';
-import '../home.dart';
+import 'cart_counter_icon.dart';
 
 class LHomeAppBar extends StatelessWidget {
   const LHomeAppBar({super.key});

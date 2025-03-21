@@ -5,13 +5,15 @@ class LSectionHeading extends StatelessWidget {
     super.key,
     this.textColor,
     required this.title,
-    this.rightSideWidget,
+    this.buttonTitle = 'View all',
+    this.showActionButton = true,
+    this.onPressed,
   });
 
   final Color? textColor;
-  final Widget? rightSideWidget;
-  final String title;
-
+  final String title, buttonTitle;
+  final bool showActionButton;
+  final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -25,7 +27,8 @@ class LSectionHeading extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        if (rightSideWidget != null) rightSideWidget!,
+        if (showActionButton)
+          TextButton(onPressed: onPressed, child: Text(buttonTitle)),
       ],
     );
   }
