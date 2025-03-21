@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -115,23 +114,21 @@ class UserRepository extends GetxController {
       if (userId.isEmpty) throw 'User not authenticated';
 
       // Create a unique file path
-      final filePath = '$userId/${DateTime.now().millisecondsSinceEpoch}';
-      final File file = File(image.path);
+      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      final path = 'profile-images/$userId/$fileName';
 
       // Upload to Supabase Storage
-      await supabase.storage
-          .from('profile-pictures') // Your Supabase bucket name
-          .upload(
-            filePath,
-            file,
-            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-          );
+      final file = await image.readAsBytes();
+      await supabase.storage.from('images').uploadBinary(path, file);
 
       // Get public URL
       final String imageUrl = supabase.storage
-          .from('profile-pictures')
-          .getPublicUrl(filePath);
+          .from('images')
+          .getPublicUrl(path);
 
+      if (kDebugMode) {
+        print('Image uploaded successfully. URL: $imageUrl');
+      } // Debugging log
       return imageUrl;
     } on FirebaseException catch (e) {
       throw LFirebaseException(e.code).message;
