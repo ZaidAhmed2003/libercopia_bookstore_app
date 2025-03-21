@@ -12,7 +12,7 @@ class SignupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = LHelperFunctions.isDarkMode(context);
     return Scaffold(
-      // appBar: AppBar(),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(LSizes.defaultSpace),
