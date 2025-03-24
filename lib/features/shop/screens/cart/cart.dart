@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:libercopia_bookstore_app/common/widgets/appbar/appbar.dart';
 import 'package:libercopia_bookstore_app/utils/constants/sizes.dart';
-
-import '../../../../common/widgets/appbar/dart/appbar.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});

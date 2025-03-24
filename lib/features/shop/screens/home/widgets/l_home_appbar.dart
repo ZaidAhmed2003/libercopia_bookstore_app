@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:libercopia_bookstore_app/common/widgets/appbar/appbar.dart';
 import 'package:libercopia_bookstore_app/utils/constants/colors.dart';
 
-import '../../../../../common/widgets/appbar/dart/appbar.dart';
 import '../../../../../common/widgets/shimmers/shimmer.dart';
 import '../../../../../utils/constants/text_strings.dart';
 import '../../../../personalization/controllers/user_controller.dart';
