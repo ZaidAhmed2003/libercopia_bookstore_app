@@ -11,6 +11,7 @@ import 'package:libercopia_bookstore_app/navigation_menu.dart';
 import 'package:libercopia_bookstore_app/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:libercopia_bookstore_app/utils/exceptions/firebase_exceptions.dart';
 import 'package:libercopia_bookstore_app/utils/exceptions/platform_exceptions.dart';
+import 'package:libercopia_bookstore_app/utils/local_storage/storage_utility.dart';
 
 import '../../../features/authentication/screens/login/login.dart';
 import '../../../features/authentication/screens/signup/widgets/verify_email.dart';
@@ -38,6 +39,7 @@ class AuthenticationRepository extends GetxController {
 
     if (user != null) {
       if (user.emailVerified) {
+        await LLocalStorage.init(user.uid);
         Get.offAll(() => const NavigationMenu());
       } else {
         Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email));
