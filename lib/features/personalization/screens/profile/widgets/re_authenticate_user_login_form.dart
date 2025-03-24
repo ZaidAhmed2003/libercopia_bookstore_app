@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:libercopia_bookstore_app/common/widgets/appbar/dart/appbar.dart';
 import 'package:libercopia_bookstore_app/utils/constants/sizes.dart';
 import 'package:libercopia_bookstore_app/utils/constants/text_strings.dart';
 import 'package:libercopia_bookstore_app/utils/validators/validation.dart';
 
+import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../controllers/user_controller.dart';
 
 class ReAuthLoginForm extends StatelessWidget {

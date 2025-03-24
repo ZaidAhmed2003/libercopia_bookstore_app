@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:libercopia_bookstore_app/utils/popups/full_screen_loader.dart';
 
+import '../../../data/models/user_model.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../data/repositories/user/user_repository.dart';
 import '../../../utils/constants/image_strings.dart';
@@ -11,7 +12,6 @@ import '../../../utils/constants/sizes.dart';
 import '../../../utils/helpers/network_manager.dart';
 import '../../../utils/popups/loaders.dart';
 import '../../authentication/screens/login/login.dart';
-import '../models/user_model.dart';
 import '../screens/profile/widgets/re_authenticate_user_login_form.dart';
 
 class UserController extends GetxController {

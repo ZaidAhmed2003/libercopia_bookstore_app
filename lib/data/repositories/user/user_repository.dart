@@ -6,10 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:libercopia_bookstore_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../features/personalization/models/user_model.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/format_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
+import '../../models/user_model.dart';
 
 class UserRepository extends GetxController {
   static UserRepository get instance => Get.find();
@@ -107,7 +107,7 @@ class UserRepository extends GetxController {
     }
   }
 
-  /// Upload an Image to Cloudinary Storage
+  /// Upload an Image to supabase Storage
   Future<String?> uploadImage(XFile image) async {
     try {
       final userId = AuthenticationRepository.instance.authUser?.uid ?? '';

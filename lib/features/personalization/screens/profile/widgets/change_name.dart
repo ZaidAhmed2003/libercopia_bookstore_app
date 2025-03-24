@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:libercopia_bookstore_app/common/widgets/appbar/dart/appbar.dart';
 import 'package:libercopia_bookstore_app/utils/constants/text_strings.dart';
 import 'package:libercopia_bookstore_app/utils/validators/validation.dart';
 
+import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../controllers/update_name_controller.dart';
 

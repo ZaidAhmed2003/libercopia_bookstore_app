@@ -5,9 +5,9 @@ import 'package:libercopia_bookstore_app/utils/helpers/network_manager.dart';
 import 'package:libercopia_bookstore_app/utils/popups/full_screen_loader.dart';
 import 'package:libercopia_bookstore_app/utils/popups/loaders.dart';
 
+import '../../../../data/models/user_model.dart';
 import '../../../../data/repositories/user/user_repository.dart';
 import '../../../../utils/constants/image_strings.dart';
-import '../../../personalization/models/user_model.dart';
 import '../../screens/signup/widgets/verify_email.dart';
 
 class SignupController extends GetxController {

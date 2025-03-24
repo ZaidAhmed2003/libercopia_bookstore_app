@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:libercopia_bookstore_app/data/models/category_model.dart';
 import 'package:libercopia_bookstore_app/data/repositories/categories/category_repository.dart';
-import 'package:libercopia_bookstore_app/features/shop/models/category_model.dart';
 import 'package:libercopia_bookstore_app/utils/popups/loaders.dart';
 
 class CategoryController extends GetxController {
@@ -46,18 +46,4 @@ class CategoryController extends GetxController {
   }
 
   /// Load selected Category Data
-  Future<void> fetchCategory(String categoryId) async {
-    try {
-      // show loader while categories are being fetched
-      isLoading.value = true;
-
-      // Fetch Categories from data source (Firebase)
-      final category = await _categoryRepository.getCategory(categoryId);
-
-      // update the categories list with the fetched data
-      allCategories.assignAll([category]);
-    } catch (e) {
-      isLoading.value = false;
-    }
-  }
 }

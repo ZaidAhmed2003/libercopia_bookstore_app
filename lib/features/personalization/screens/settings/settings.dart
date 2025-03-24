@@ -1,13 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:libercopia_bookstore_app/common/widgets/appbar/dart/appbar.dart';
 import 'package:libercopia_bookstore_app/common/widgets/texts/section_heading.dart';
 import 'package:libercopia_bookstore_app/features/personalization/screens/address/address.dart';
 
+import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/list_tile/settings_menu_tile.dart';
 import '../../../../common/widgets/list_tile/user_profile_tile.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../../data/repositories/dummy/dummy_repository.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 
@@ -16,6 +18,9 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dummyRepository = Get.put(DummyRepository());
+    final userEmail = FirebaseAuth.instance.currentUser?.email;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -100,12 +105,17 @@ class SettingsScreen extends StatelessWidget {
                   const LSectionHeading(title: 'App Settings'),
 
                   SizedBox(height: LSizes.spaceBtwItems),
-                  LSettingsMenuTile(
-                    icon: Iconsax.document_upload,
-                    title: 'Load Data',
-                    subtitle: 'Upload Data to your cloud firestore',
-                    onTap: () {},
-                  ),
+                  if (userEmail == 'zaidahmed2345@gmail.com')
+                    LSettingsMenuTile(
+                      icon: Iconsax.document_upload,
+                      title: 'Load Data',
+                      subtitle: 'Upload Data to your cloud firestore',
+                      onTap: () {
+                        // Show a loading indicator or some feedback to the user
+                        dummyRepository.uploadAllDummyData();
+                      },
+                    ),
+
                   LSettingsMenuTile(
                     icon: Iconsax.location,
                     title: 'Geolocation',

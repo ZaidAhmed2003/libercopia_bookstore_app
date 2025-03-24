@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:libercopia_bookstore_app/common/widgets/appbar/dart/appbar.dart';
+import 'package:libercopia_bookstore_app/common/widgets/appbar/appbar.dart';
 import 'package:libercopia_bookstore_app/common/widgets/images/l_circular_image.dart';
 import 'package:libercopia_bookstore_app/common/widgets/texts/section_heading.dart';
 import 'package:libercopia_bookstore_app/features/personalization/screens/profile/widgets/change_name.dart';
