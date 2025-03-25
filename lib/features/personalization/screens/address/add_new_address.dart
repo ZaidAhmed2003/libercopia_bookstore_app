@@ -115,7 +115,10 @@ class AddNewAddressScreen extends StatelessWidget {
                 const SizedBox(height: LSizes.defaultSpace),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(onPressed: () {}, child: Text('Save')),
+                  child: ElevatedButton(
+                    onPressed: () => controller.addNewAddress(),
+                    child: Text('Save'),
+                  ),
                 ),
               ],
             ),

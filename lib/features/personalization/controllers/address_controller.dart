@@ -42,7 +42,7 @@ class AddressController extends GetxController {
     }
   }
 
-  Future<void> selectAddress(AddressModel newSelectedAddress) async {
+  Future selectAddress(AddressModel newSelectedAddress) async {
     try {
       Get.defaultDialog(
         title: '',
@@ -66,6 +66,9 @@ class AddressController extends GetxController {
 
       // set the new selected address as the selected address
       await addressRepository.updateSelectedField(newSelectedAddress.id, true);
+
+      // remove loader
+      Navigator.of(Get.context!).pop();
     } catch (e) {
       LLoaders.errorSnackBar(
         title: 'Error in selecting address',
@@ -135,6 +138,34 @@ class AddressController extends GetxController {
       // Remove Loader
       LFullScreenLoader.stopLoading();
       // Show Some Generic Error To User
+      LLoaders.errorSnackBar(
+        title: 'Address not found  ',
+        message: e.toString(),
+      );
+    }
+  }
+
+  /// Delete Address
+  Future deleteAddress(String id) async {
+    try {
+      // Start Loading
+      Get.defaultDialog(
+        title: '',
+        onWillPop: () async => false,
+        barrierDismissible: false,
+        backgroundColor: Colors.transparent,
+        content: const LCircularLoader(),
+      );
+
+      // Delete the Address
+      await addressRepository.deleteAddress(id);
+
+      // refresh the data
+      refreshData.toggle();
+
+      // remove loader
+      Navigator.of(Get.context!).pop();
+    } catch (e) {
       LLoaders.errorSnackBar(
         title: 'Address not found  ',
         message: e.toString(),

@@ -43,15 +43,16 @@ class AddressModel {
   /// Convert model to JSON structure
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'street': street,
-      'city': city,
-      'state': state,
-      'postalCode': postalCode,
-      'country': country,
-      'phoneNumber': phoneNumber,
-      'dateTime': dateTime,
+      'Id': id,
+      'Name': name,
+      'Street': street,
+      'City': city,
+      'State': state,
+      'PostalCode': postalCode,
+      'Country': country,
+      'PhoneNumber': phoneNumber,
+      'DateTime': DateTime.now(),
+      'SelectedAddress': selectedAddress,
     };
   }
 
@@ -66,7 +67,7 @@ class AddressModel {
       state: data['State'] as String,
       postalCode: data['PostalCode'] as String,
       country: data['Country'] as String,
-      selectedAddress: data['selectedAddress'] as bool,
+      selectedAddress: data['SelectedAddress'] as bool,
       dateTime: (data['DateTime'] as Timestamp).toDate(),
     );
   }
@@ -84,7 +85,7 @@ class AddressModel {
       state: data['State'] ?? '',
       postalCode: data['PostalCode'] ?? '',
       country: data['Country'] ?? '',
-      selectedAddress: data['selectedAddress'] as bool,
+      selectedAddress: data['SelectedAddress'] as bool,
       dateTime: (data['DateTime'] as Timestamp).toDate(),
     );
   }

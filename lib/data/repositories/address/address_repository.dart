@@ -13,7 +13,6 @@ class AddressRepository extends GetxController {
     try {
       // Get the current user's ID
       final userId = AuthenticationRepository.instance.authUser!.uid;
-
       // Check if the user ID is not empty
       if (userId.isEmpty) {
         throw 'Unable to find user information, please try again later';
@@ -27,9 +26,10 @@ class AddressRepository extends GetxController {
               .collection('Addresses')
               .get();
 
-      // Return the list of addresses
       return result.docs
-          .map((document) => AddressModel.fromSnapshot(document))
+          .map(
+            (documentSnapshot) => AddressModel.fromSnapshot(documentSnapshot),
+          )
           .toList();
     } catch (e) {
       throw 'Something went wrong while fetching user addresses, Please try again later';
@@ -64,6 +64,21 @@ class AddressRepository extends GetxController {
       return currentAddress.id;
     } catch (e) {
       throw 'Something went wrong while adding the address';
+    }
+  }
+
+  /// Delete Address
+  Future<void> deleteAddress(String addressId) async {
+    try {
+      final userId = AuthenticationRepository.instance.authUser!.uid;
+      await _db
+          .collection('Users')
+          .doc(userId)
+          .collection('Addresses')
+          .doc(addressId)
+          .delete();
+    } catch (e) {
+      throw 'Something went wrong while deleting the address';
     }
   }
 }
