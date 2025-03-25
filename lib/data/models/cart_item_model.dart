@@ -1,9 +1,10 @@
 class CartItemModel {
-  final String bookId;
+  String bookId;
   String title;
   double price;
   int quantity;
   String image;
+  String authorId;
 
   CartItemModel({
     required this.bookId,
@@ -11,7 +12,18 @@ class CartItemModel {
     required this.price,
     required this.quantity,
     required this.image,
+    required this.authorId,
   });
+
+  /// Empty Cart Helper
+  static CartItemModel empty() => CartItemModel(
+    bookId: '',
+    title: '',
+    price: 0,
+    quantity: 0,
+    image: '',
+    authorId: '',
+  );
 
   /// Convert model to JSON structure
   Map<String, dynamic> toJson() {
@@ -21,6 +33,7 @@ class CartItemModel {
       'price': price,
       'quantity': quantity,
       'image': image,
+      'authorId': authorId,
     };
   }
 
@@ -29,26 +42,10 @@ class CartItemModel {
     return CartItemModel(
       bookId: json['bookId'] ?? '',
       title: json['title'] ?? '',
-      price: (json['price'] as num).toDouble(),
+      price: json['price']?.toDouble(),
       quantity: json['quantity'] ?? 0,
       image: json['image'] ?? '',
-    );
-  }
-
-  /// Copy with method
-  CartItemModel copyWith({
-    String? bookId,
-    String? title,
-    double? price,
-    int? quantity,
-    String? image,
-  }) {
-    return CartItemModel(
-      bookId: bookId ?? this.bookId,
-      title: title ?? this.title,
-      price: price ?? this.price,
-      quantity: quantity ?? this.quantity,
-      image: image ?? this.image,
+      authorId: json['authorId'] ?? '',
     );
   }
 }

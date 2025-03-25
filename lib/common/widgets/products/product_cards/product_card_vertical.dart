@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:libercopia_bookstore_app/common/styles/shadow_styles.dart';
 import 'package:libercopia_bookstore_app/common/widgets/containers/rounded_container.dart';
@@ -11,7 +12,6 @@ import 'package:libercopia_bookstore_app/utils/constants/colors.dart';
 import 'package:libercopia_bookstore_app/utils/constants/sizes.dart';
 import 'package:libercopia_bookstore_app/utils/helpers/helper_functions.dart';
 
-import '../../../../features/shop/controllers/book_controllers.dart';
 import '../../../../features/shop/controllers/cart_controller.dart';
 
 class ProductCardVertical extends StatelessWidget {
@@ -21,8 +21,8 @@ class ProductCardVertical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _bookController = BookController.instance;
-    final _cartController = CartController.instance;
+    // final _bookController = BookController.instance;
+    // final _cartController = CartController.instance;
 
     final dark = LHelperFunctions.isDarkMode(context);
 
@@ -120,27 +120,59 @@ class ProductCardVertical extends StatelessWidget {
                 ),
 
                 /// ADD to Cart Button
-                Container(
-                  decoration: BoxDecoration(
-                    color: LColors.dark,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(LSizes.cardRadiusMd),
-                      bottomRight: Radius.circular(LSizes.productImageRadius),
-                    ),
-                  ),
-                  child: const SizedBox(
-                    width: LSizes.iconLg * 1.2,
-                    height: LSizes.iconLg * 1.2,
-                    child: Center(
-                      child: Icon(Iconsax.add, color: LColors.white),
-                    ),
-                  ),
-                ),
+                ProductAddToCartButton(book: book),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class ProductAddToCartButton extends StatelessWidget {
+  const ProductAddToCartButton({super.key, required this.book});
+
+  final BookModel book;
+
+  @override
+  Widget build(BuildContext context) {
+    final cartController = CartController.instance;
+
+    return InkWell(
+      onTap: () {
+        final cartItem = cartController.convertBookToCartItem(book, 1);
+        cartController.addOneToCart(cartItem);
+      },
+      child: Obx(() {
+        final bookQuantityInCart = cartController.getBookQuantityInCart(
+          book.id,
+        );
+        return Container(
+          decoration: BoxDecoration(
+            color: bookQuantityInCart > 0 ? LColors.primary : LColors.dark,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(LSizes.cardRadiusMd),
+              bottomRight: Radius.circular(LSizes.productImageRadius),
+            ),
+          ),
+          child: SizedBox(
+            width: LSizes.iconLg * 1.2,
+            height: LSizes.iconLg * 1.2,
+            child: Center(
+              child:
+                  bookQuantityInCart > 0
+                      ? Text(
+                        bookQuantityInCart.toString(),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge!.apply(color: LColors.white),
+                      )
+                      : const Icon(Iconsax.add, color: LColors.white),
+            ),
+          ),
+        );
+      }),
     );
   }
 }

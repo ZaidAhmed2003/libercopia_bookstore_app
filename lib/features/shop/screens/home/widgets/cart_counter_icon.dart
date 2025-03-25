@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:libercopia_bookstore_app/utils/constants/colors.dart';
 
-class LCartCounterIcon extends StatelessWidget {
-  const LCartCounterIcon({super.key, this.iconColor, required this.onPressed});
+import '../../../controllers/cart_controller.dart';
 
-  final Color? iconColor;
-  final VoidCallback onPressed;
+class LCartCounterIcon extends StatelessWidget {
+  const LCartCounterIcon({
+    super.key,
+    this.iconColor,
+    this.counterBgColor,
+    this.counterTextColor,
+  });
+
+  final Color? iconColor, counterBgColor, counterTextColor;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CartController());
+
     return Stack(
       children: [
         IconButton(
-          onPressed: onPressed,
           icon: Icon(Iconsax.shopping_bag, color: iconColor),
+          onPressed: () {},
         ),
         Positioned(
           right: 0,
@@ -26,11 +35,13 @@ class LCartCounterIcon extends StatelessWidget {
               borderRadius: BorderRadius.circular(100),
             ),
             child: Center(
-              child: Text(
-                '2',
-                style: Theme.of(context).textTheme.labelLarge!.apply(
-                  color: LColors.white,
-                  fontSizeFactor: 0.8,
+              child: Obx(
+                () => Text(
+                  controller.noOfCartItems.value.toString(),
+                  style: Theme.of(context).textTheme.labelLarge!.apply(
+                    color: LColors.white,
+                    fontSizeFactor: 0.8,
+                  ),
                 ),
               ),
             ),

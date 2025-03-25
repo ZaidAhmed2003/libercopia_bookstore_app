@@ -39,7 +39,7 @@ class LHomeAppBar extends StatelessWidget {
           }),
         ],
       ),
-      actions: [LCartCounterIcon(onPressed: () {}, iconColor: LColors.white)],
+      actions: [LCartCounterIcon(iconColor: LColors.white)],
     );
   }
 }
