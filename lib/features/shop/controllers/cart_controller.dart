@@ -69,14 +69,16 @@ class CartController extends GetxController {
 
   void removeOneFromCart(CartItemModel cartItem) {
     int index = cartItems.indexWhere((item) => item.bookId == cartItem.bookId);
-    if (index < 0) {
+    if (index >= 0) {
       if (cartItems[index].quantity > 1) {
         cartItems[index].quantity -= 1;
       } else {
-        cartItems[index].quantity == 1
-            ? removeFromCartDialog(index)
-            : cartItems.removeAt(index);
+        // if quantity == 1 show remove dialog
+        removeFromCartDialog(index);
       }
+    } else {
+      // if item is not found
+      LLoaders.customToast(message: 'Item not found in cart.');
     }
     updateCart();
   }
@@ -103,7 +105,7 @@ class CartController extends GetxController {
       price: book.price,
       quantity: quantity,
       image: book.imageUrls.first,
-      authorId: book.authorId,
+      authorId: book.author.id,
     );
   }
 

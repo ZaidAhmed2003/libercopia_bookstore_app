@@ -36,19 +36,4 @@ class WishlistModel {
       addedAt: (data['addedAt'] as Timestamp).toDate(),
     );
   }
-
-  /// Copy with method
-  WishlistModel copyWith({
-    String? id,
-    String? userId,
-    String? bookId,
-    DateTime? addedAt,
-  }) {
-    return WishlistModel(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      bookId: bookId ?? this.bookId,
-      addedAt: addedAt ?? this.addedAt,
-    );
-  }
 }

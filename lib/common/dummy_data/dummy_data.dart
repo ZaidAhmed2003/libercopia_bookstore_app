@@ -9,12 +9,14 @@ class LDummyCategories {
       image: LImages.discountImg,
       isFeatured: true,
       parentId: "",
+      createdAt: DateTime.now(),
     ),
     CategoryModel(
       id: '2',
       name: 'Crime',
       image: LImages.discountImg,
       isFeatured: true,
+      createdAt: DateTime.now(),
       parentId: "",
     ),
     CategoryModel(
@@ -22,6 +24,7 @@ class LDummyCategories {
       name: 'Thriller',
       image: LImages.discountImg,
       isFeatured: true,
+      createdAt: DateTime.now(),
       parentId: "",
     ),
     CategoryModel(
@@ -29,6 +32,7 @@ class LDummyCategories {
       name: 'Romance',
       image: LImages.discountImg,
       isFeatured: true,
+      createdAt: DateTime.now(),
       parentId: "",
     ),
     CategoryModel(
@@ -36,6 +40,7 @@ class LDummyCategories {
       name: 'Action',
       image: LImages.discountImg,
       isFeatured: true,
+      createdAt: DateTime.now(),
       parentId: "",
     ),
     CategoryModel(
@@ -43,6 +48,7 @@ class LDummyCategories {
       name: 'Mystery',
       image: LImages.discountImg,
       isFeatured: true,
+      createdAt: DateTime.now(),
       parentId: "",
     ),
     CategoryModel(
@@ -51,12 +57,14 @@ class LDummyCategories {
       image: LImages.discountImg,
       isFeatured: true,
       parentId: "",
+      createdAt: DateTime.now(),
     ),
     CategoryModel(
       id: '8',
       name: 'Fiction',
       image: LImages.discountImg,
       isFeatured: true,
+      createdAt: DateTime.now(),
       parentId: "",
     ),
   ];

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:libercopia_bookstore_app/common/widgets/appbar/appbar.dart';
-import 'package:libercopia_bookstore_app/common/widgets/icons/l_circular_icon.dart';
 import 'package:libercopia_bookstore_app/common/widgets/layout/grid_layout.dart';
 import 'package:libercopia_bookstore_app/common/widgets/products/product_cards/product_card_vertical.dart';
-import 'package:libercopia_bookstore_app/features/shop/screens/home/home.dart';
 import 'package:libercopia_bookstore_app/utils/constants/sizes.dart';
 
 import '../../controllers/wishlist_controller.dart';
@@ -23,12 +20,12 @@ class WishlistScreen extends StatelessWidget {
           'Wishlist',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
-        actions: [
-          LCircularIcon(
-            icon: Iconsax.add,
-            onPressed: () => Get.to(const HomeScreen()),
-          ),
-        ],
+        // actions: [
+        //   LCircularIcon(
+        //     icon: Iconsax.add,
+        //     onPressed: () => Get.to(const NavigationMenu()),
+        //   ),
+        // ],
       ),
       body: Obx(() {
         if (controller.wishlistBooks.isEmpty) {

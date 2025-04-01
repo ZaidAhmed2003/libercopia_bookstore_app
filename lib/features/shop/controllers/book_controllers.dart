@@ -8,26 +8,38 @@ class BookController extends GetxController {
 
   final isLoading = false.obs;
   final _bookRepository = Get.put(BookRepository());
+
   final RxList<BookModel> allBooks = <BookModel>[].obs;
   final RxList<BookModel> featuredBooks = <BookModel>[].obs;
   final RxList<BookModel> searchResults = <BookModel>[].obs;
+  final Rxn<BookModel> selectedBook = Rxn<BookModel>();
 
   @override
   void onInit() {
+    fetchAllBooks();
     fetchFeaturedBooks();
     super.onInit();
   }
 
-  /// Fetch Featured Books
-  Future<void> fetchFeaturedBooks() async {
+  /// Fetch All Books (Used for Searching & Book Details)
+  Future<void> fetchAllBooks() async {
+    if (allBooks.isNotEmpty) return; // Prevent duplicate fetches
     try {
-      // show loader while loading products
       isLoading.value = true;
+      final books = await _bookRepository.getAllBooks();
+      allBooks.assignAll(books);
+    } catch (e) {
+      LLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
-      // Fetch Books
-      final books = await _bookRepository.getFeaturedBooks();
-
-      // Assign Books
+  /// Fetch Featured Books with Pagination
+  Future<void> fetchFeaturedBooks({int limit = 4}) async {
+    try {
+      isLoading.value = true;
+      final books = await _bookRepository.getFeaturedBooks(limit: limit);
       featuredBooks.assignAll(books);
     } catch (e) {
       LLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
@@ -49,12 +61,25 @@ class BookController extends GetxController {
     }
   }
 
-  /// Get Book by ID
-  BookModel? getBookById(String id) {
+  /// Get Book by ID (Fetch if not in local state)
+  Future<BookModel?> getBookById(String id) async {
     try {
-      return allBooks.firstWhere((book) => book.id == id);
+      // Check if the book is already in the list
+      final existingBook = allBooks.firstWhereOrNull((book) => book.id == id);
+      if (existingBook != null) return existingBook;
+
+      // Fetch from Firestore if not found in memory
+      isLoading.value = true;
+      final book = await _bookRepository.getBookById(id);
+      if (book != null) {
+        allBooks.add(book); // Cache it locally
+      }
+      return book;
     } catch (e) {
+      LLoaders.errorSnackBar(title: 'Book Not Found', message: e.toString());
       return null;
+    } finally {
+      isLoading.value = false;
     }
   }
 }

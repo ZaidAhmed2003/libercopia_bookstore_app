@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CategoryModel {
   final String id;
-  String name;
-  String image;
-  bool isFeatured;
-  String parentId;
+  final String name;
+  final String image;
+  final bool isFeatured;
+  final String parentId;
+  final DateTime createdAt;
 
   CategoryModel({
     required this.id,
@@ -13,6 +14,7 @@ class CategoryModel {
     required this.image,
     required this.isFeatured,
     required this.parentId,
+    required this.createdAt,
   });
 
   /// Empty Helper Function
@@ -22,6 +24,7 @@ class CategoryModel {
     image: '',
     isFeatured: false,
     parentId: '',
+    createdAt: DateTime.now(),
   );
 
   /// Convert model to JSON structure
@@ -32,35 +35,20 @@ class CategoryModel {
       'image': image,
       'isFeatured': isFeatured,
       'parentId': parentId,
+      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 
   /// Create CategoryModel from Firestore Document
   factory CategoryModel.fromSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
+    final data = snapshot.data() as Map<String, dynamic>? ?? {};
     return CategoryModel(
       id: snapshot.id,
       name: data['name'] ?? '',
       image: data['image'] ?? '',
-      isFeatured: data['isFeatured'] ?? false,
-      parentId: data['parentId'] ?? '',
-    );
-  }
-
-  /// Copy with method
-  CategoryModel copyWith({
-    String? id,
-    String? name,
-    String? image,
-    bool? isFeatured,
-    String? parentId,
-  }) {
-    return CategoryModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      image: image ?? this.image,
-      isFeatured: isFeatured ?? this.isFeatured,
-      parentId: parentId ?? this.parentId,
+      isFeatured: (data['isFeatured'] ?? false) as bool,
+      parentId: data['parentId']?.toString() ?? '',
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 }

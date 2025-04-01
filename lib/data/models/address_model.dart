@@ -3,7 +3,7 @@ import 'package:libercopia_bookstore_app/utils/formatters/formatter.dart';
 
 class AddressModel {
   String id;
-  final String name; // e.g., "Home", "Office"
+  final String name;
   final String street;
   final String city;
   final String state;
@@ -40,58 +40,45 @@ class AddressModel {
     phoneNumber: '',
   );
 
-  /// Convert model to JSON structure
+  /// Convert model to JSON structure (Firestore Compatible)
   Map<String, dynamic> toJson() {
     return {
-      'Id': id,
-      'Name': name,
-      'Street': street,
-      'City': city,
-      'State': state,
-      'PostalCode': postalCode,
-      'Country': country,
-      'PhoneNumber': phoneNumber,
-      'DateTime': DateTime.now(),
-      'SelectedAddress': selectedAddress,
+      'id': id,
+      'name': name,
+      'street': street,
+      'city': city,
+      'state': state,
+      'postalCode': postalCode,
+      'country': country,
+      'phoneNumber': phoneNumber,
+      'dateTime': dateTime != null ? Timestamp.fromDate(dateTime!) : null,
+      'selectedAddress': selectedAddress,
     };
   }
 
-  /// Create AddressModel from Firestore Document
-  factory AddressModel.fromMap(Map<String, dynamic> data) {
+  /// Create AddressModel from Firestore Document Map
+  factory AddressModel.fromMap(Map<String, dynamic> data, {String? docId}) {
     return AddressModel(
-      id: data['Id'] as String,
-      name: data['Name'] as String,
-      phoneNumber: data['PhoneNumber'] as String,
-      street: data['Street'] as String,
-      city: data['City'] as String,
-      state: data['State'] as String,
-      postalCode: data['PostalCode'] as String,
-      country: data['Country'] as String,
-      selectedAddress: data['SelectedAddress'] as bool,
-      dateTime: (data['DateTime'] as Timestamp).toDate(),
+      id: docId ?? data['id'] ?? '',
+      name: data['name'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+      street: data['street'] ?? '',
+      city: data['city'] ?? '',
+      state: data['state'] ?? '',
+      postalCode: data['postalCode'] ?? '',
+      country: data['country'] ?? '',
+      selectedAddress: data['selectedAddress'] ?? false,
+      dateTime: (data['dateTime'] as Timestamp?)?.toDate(),
     );
   }
 
-  /// Factory Constructor to create an AddressModel from a Firestore DocumentSnapshot
+  /// Create AddressModel from Firestore DocumentSnapshot
   factory AddressModel.fromSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
-
-    return AddressModel(
-      id: snapshot.id,
-      name: data['Name'] ?? '',
-      phoneNumber: data['PhoneNumber'] ?? '',
-      street: data['Street'] ?? '',
-      city: data['City'] ?? '',
-      state: data['State'] ?? '',
-      postalCode: data['PostalCode'] ?? '',
-      country: data['Country'] ?? '',
-      selectedAddress: data['SelectedAddress'] as bool,
-      dateTime: (data['DateTime'] as Timestamp).toDate(),
-    );
+    return AddressModel.fromMap(snapshot.data() as Map<String, dynamic>, docId: snapshot.id);
   }
 
   @override
   String toString() {
-    return '$street , $city , $state , $postalCode , $country';
+    return '$street, $city, $state, $postalCode, $country';
   }
 }

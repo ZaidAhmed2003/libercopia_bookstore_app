@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:libercopia_bookstore_app/data/models/address_model.dart';
+import 'package:libercopia_bookstore_app/data/models/cart_item_model.dart';
 
-import 'order_item_model.dart';
-
-enum OrderStatus { pending, processing, shipped, delivered, cancelled }
+import '../../utils/constants/enums.dart';
+import '../../utils/helpers/helper_functions.dart';
 
 class OrderModel {
   final String id;
   final String userId;
-  List<OrderItemModel> items;
-  double totalAmount;
-  DateTime orderDate;
-  OrderStatus status;
-  String paymentMethod;
+  final OrderStatus status;
+  final double totalAmount;
+  final DateTime orderDate;
+  final String paymentMethod;
+  final AddressModel? address;
+  final DateTime? deliveryDate;
+  final List<CartItemModel> items;
 
   OrderModel({
     required this.id,
@@ -21,29 +24,36 @@ class OrderModel {
     required this.orderDate,
     required this.status,
     required this.paymentMethod,
+    this.address,
+    this.deliveryDate,
   });
 
-  /// Empty Helper Function
-  static OrderModel empty() => OrderModel(
-    id: '',
-    userId: '',
-    items: [],
-    totalAmount: 0.0,
-    orderDate: DateTime.now(),
-    status: OrderStatus.pending,
-    paymentMethod: '',
-  );
+  String get formattedOrderDate => LHelperFunctions.getFormattedDate(orderDate);
+
+  String get formattedDeliveryDate =>
+      deliveryDate != null
+          ? LHelperFunctions.getFormattedDate(deliveryDate!)
+          : '';
+
+  String get orderStatusText =>
+      status == OrderStatus.delivered
+          ? 'Delivered'
+          : status == OrderStatus.shipped
+          ? 'Shipment on the way'
+          : 'Processing';
 
   /// Convert model to JSON structure
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'userId': userId,
-      'items': items.map((item) => item.toJson()).toList(),
+      'status': status.toString(),
       'totalAmount': totalAmount,
-      'orderDate': Timestamp.fromDate(orderDate),
-      'status': status.name,
+      'orderDate': orderDate,
       'paymentMethod': paymentMethod,
+      'address': address?.toJson(),
+      'deliveryDate': deliveryDate,
+      'items': items.map((item) => item.toJson()).toList(),
     };
   }
 
@@ -51,40 +61,25 @@ class OrderModel {
   factory OrderModel.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return OrderModel(
-      id: snapshot.id,
-      userId: data['userId'] ?? '',
+      id: data['id'] as String,
+      userId: data['userId'] as String,
+      status: OrderStatus.values.firstWhere(
+        (e) => e.toString() == data['status'],
+      ),
+      totalAmount: data['totalAmount'] as double,
+      orderDate: (data['orderDate'] as Timestamp).toDate(),
+      paymentMethod: data['paymentMethod'] as String,
+      address: AddressModel.fromMap(data['address'] as Map<String, dynamic>),
+      deliveryDate:
+          data['deliveryDate'] == null
+              ? null
+              : (data['deliveryDate'] as Timestamp).toDate(),
       items:
           (data['items'] as List<dynamic>)
-              .map((item) => OrderItemModel.fromJson(item))
+              .map(
+                (item) => CartItemModel.fromJson(item as Map<String, dynamic>),
+              )
               .toList(),
-      totalAmount: (data['totalAmount'] as num).toDouble(),
-      orderDate: (data['orderDate'] as Timestamp).toDate(),
-      status: OrderStatus.values.firstWhere(
-        (e) => e.name == data['status'],
-        orElse: () => OrderStatus.pending,
-      ),
-      paymentMethod: data['paymentMethod'] ?? '',
-    );
-  }
-
-  /// Copy with method
-  OrderModel copyWith({
-    String? id,
-    String? userId,
-    List<OrderItemModel>? items,
-    double? totalAmount,
-    DateTime? orderDate,
-    OrderStatus? status,
-    String? paymentMethod,
-  }) {
-    return OrderModel(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      items: items ?? List.from(this.items),
-      totalAmount: totalAmount ?? this.totalAmount,
-      orderDate: orderDate ?? this.orderDate,
-      status: status ?? this.status,
-      paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
 }

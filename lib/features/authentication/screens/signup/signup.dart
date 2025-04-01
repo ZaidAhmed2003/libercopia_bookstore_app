@@ -3,14 +3,12 @@ import 'package:libercopia_bookstore_app/features/authentication/screens/signup/
 import 'package:libercopia_bookstore_app/utils/constants/text_strings.dart';
 
 import '../../../../utils/constants/sizes.dart';
-import '../../../../utils/helpers/helper_functions.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final dark = LHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(

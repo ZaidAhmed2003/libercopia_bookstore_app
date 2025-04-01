@@ -26,7 +26,6 @@ class HomeScreen extends StatelessWidget {
           children: [
             Container(
               color: LColors.primary,
-              padding: const EdgeInsets.all(0),
               child: Column(
                 children: [
                   /// Appbar
@@ -34,26 +33,32 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: LSizes.spaceBtwSections),
 
                   /// Search Bar
-                  LSearchContainer(
-                    text: 'Search books',
-                    icon: Iconsax.search_normal,
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to Search Screen
+                      Get.toNamed('/search');
+                    },
+                    child: LSearchContainer(
+                      text: 'Search books',
+                      icon: Iconsax.search_normal,
+                    ),
                   ),
                   const SizedBox(height: LSizes.spaceBtwSections),
 
                   /// Categories
                   Padding(
-                    padding: EdgeInsets.only(left: LSizes.defaultSpace),
+                    padding: const EdgeInsets.only(left: LSizes.defaultSpace),
                     child: Column(
                       children: [
                         /// Heading
-                        LSectionHeading(
+                        const LSectionHeading(
                           title: 'Popular Categories',
                           showActionButton: false,
                         ),
                         const SizedBox(height: LSizes.spaceBtwItems),
 
                         /// Categories List View
-                        HomeCategories(),
+                        const HomeCategories(),
                         const SizedBox(height: LSizes.spaceBtwItems),
                       ],
                     ),
@@ -62,32 +67,36 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            /// Popular Books
+            /// Featured Books
             Padding(
               padding: const EdgeInsets.all(LSizes.defaultSpace),
               child: Column(
                 children: [
-                  Obx(() {
-                    if (controller.isLoading.value) {
-                      return const LVerticalProductShimmer();
-                    }
+                  FutureBuilder(
+                    future: controller.fetchFeaturedBooks(limit: 4),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const LVerticalProductShimmer();
+                      }
 
-                    if (controller.featuredBooks.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No Books Found',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      );
-                    }
-                    return LGridLayout(
-                      itemCount: controller.featuredBooks.length,
-                      itemBuilder:
-                          (_, index) => ProductCardVertical(
-                            book: controller.featuredBooks[index],
+                      if (controller.featuredBooks.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No Books Found',
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                    );
-                  }),
+                        );
+                      }
+
+                      return LGridLayout(
+                        itemCount: controller.featuredBooks.length,
+                        itemBuilder:
+                            (_, index) => ProductCardVertical(
+                              book: controller.featuredBooks[index],
+                            ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

@@ -12,6 +12,8 @@ import '../../../../data/repositories/authentication/authentication_repository.d
 import '../../../../data/repositories/dummy/dummy_repository.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../../shop/screens/cart/cart.dart';
+import '../../../shop/screens/order/order.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -54,7 +56,10 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   /// Account Setting
-                  const LSectionHeading(title: 'Account Settings'),
+                  const LSectionHeading(
+                    title: 'Account Settings',
+                    showActionButton: false,
+                  ),
                   const SizedBox(height: LSizes.spaceBtwItems),
 
                   LSettingsMenuTile(
@@ -67,13 +72,13 @@ class SettingsScreen extends StatelessWidget {
                     icon: Iconsax.shopping_cart,
                     title: 'My Cart',
                     subtitle: 'Add, remove & checkout items',
-                    onTap: () {},
+                    onTap: () => Get.to(() => const CartScreen()),
                   ),
                   LSettingsMenuTile(
                     icon: Iconsax.bag_tick,
                     title: 'My Orders',
                     subtitle: 'In-progress, completed & cancelled orders',
-                    onTap: () {},
+                    onTap: () => Get.to(() => const OrderScreen()),
                   ),
                   LSettingsMenuTile(
                     icon: Iconsax.bank,
@@ -102,7 +107,10 @@ class SettingsScreen extends StatelessWidget {
 
                   // App Settings
                   SizedBox(height: LSizes.spaceBtwSections),
-                  const LSectionHeading(title: 'App Settings'),
+                  const LSectionHeading(
+                    title: 'App Settings',
+                    showActionButton: false,
+                  ),
 
                   SizedBox(height: LSizes.spaceBtwItems),
                   if (userEmail == 'zaidahmed2345@gmail.com')

@@ -8,43 +8,39 @@ import '../../models/wishlist_model.dart';
 class WishlistRepository extends GetxController {
   static WishlistRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  /// Get current user's ID
+  String get _userId {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('User not logged in');
+    return user.uid;
+  }
+
+  /// Firestore reference for the user's wishlist sub-collection
+  CollectionReference _wishlistCollection(String userId) =>
+      _db.collection('users').doc(userId).collection('wishlist');
 
   /// Get user wishlist stream
   Stream<List<WishlistModel>> getWishlistStream() {
-    return _db
-        .collection('Wishlists')
-        .where('userId', isEqualTo: _auth.currentUser?.uid)
-        .snapshots()
-        .map(
-          (snapshot) =>
-              snapshot.docs
-                  .map((doc) => WishlistModel.fromSnapshot(doc))
-                  .toList(),
-        );
+    return _wishlistCollection(_userId).snapshots().map(
+      (snapshot) =>
+          snapshot.docs.map((doc) => WishlistModel.fromSnapshot(doc)).toList(),
+    );
   }
 
-  /// Get specific wishlist item
-  Future<WishlistModel?> getWishlistItem(String bookId) async {
-    final snapshot =
-        await _db
-            .collection('wishlists')
-            .where('userId', isEqualTo: _auth.currentUser?.uid)
-            .where('bookId', isEqualTo: bookId)
-            .limit(1)
-            .get();
-
-    return snapshot.docs.isNotEmpty
-        ? WishlistModel.fromSnapshot(snapshot.docs.first)
-        : null;
+  /// Check if a book is in the wishlist
+  Future<bool> isBookInWishlist(String bookId) async {
+    final doc = await _wishlistCollection(_userId).doc(bookId).get();
+    return doc.exists;
   }
 
   /// Add to wishlist
   Future<void> addToWishlist(String bookId) async {
     try {
-      await _db.collection('Wishlists').add({
-        'userId': _auth.currentUser?.uid,
+      await _wishlistCollection(_userId).doc(bookId).set({
+        'userId': _userId,
         'bookId': bookId,
         'addedAt': FieldValue.serverTimestamp(),
       });
@@ -56,26 +52,13 @@ class WishlistRepository extends GetxController {
   }
 
   /// Remove from wishlist
-  Future<void> removeFromWishlist(String wishlistItemId) async {
+  Future<void> removeFromWishlist(String bookId) async {
     try {
-      await _db.collection('Wishlists').doc(wishlistItemId).delete();
+      await _wishlistCollection(_userId).doc(bookId).delete();
     } on FirebaseException catch (e) {
       throw LFirebaseException(e.code).message;
     } catch (e) {
       throw 'Failed to remove from wishlist: ${e.toString()}';
     }
-  }
-
-  /// Check if book is in wishlist
-  Future<bool> isBookInWishlist(String bookId) async {
-    final snapshot =
-        await _db
-            .collection('Wishlists')
-            .where('userId', isEqualTo: _auth.currentUser?.uid)
-            .where('bookId', isEqualTo: bookId)
-            .limit(1)
-            .get();
-
-    return snapshot.docs.isNotEmpty;
   }
 }

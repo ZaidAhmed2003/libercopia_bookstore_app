@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthorModel {
   final String id;
-  String name;
-  String bio;
-  String photoUrl;
-  DateTime createdAt;
+  final String name;
+  final String bio;
+  final String photoUrl; // No longer nullable
+  final DateTime createdAt;
 
   AuthorModel({
     required this.id,
@@ -35,32 +35,18 @@ class AuthorModel {
     };
   }
 
-  /// Create AuthorModel from Firestore Document
+  /// Create AuthorModel from Firestore Document (Safe Parsing)
   factory AuthorModel.fromSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
+    final data = snapshot.data() as Map<String, dynamic>? ?? {};
     return AuthorModel(
       id: snapshot.id,
       name: data['name'] ?? '',
       bio: data['bio'] ?? '',
       photoUrl: data['photoUrl'] ?? '',
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-    );
-  }
-
-  /// Copy with method
-  AuthorModel copyWith({
-    String? id,
-    String? name,
-    String? bio,
-    String? photoUrl,
-    DateTime? createdAt,
-  }) {
-    return AuthorModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      bio: bio ?? this.bio,
-      photoUrl: photoUrl ?? this.photoUrl,
-      createdAt: createdAt ?? this.createdAt,
+      createdAt:
+          (data['createdAt'] is Timestamp)
+              ? (data['createdAt'] as Timestamp).toDate()
+              : DateTime.now(), // Fallback for safety
     );
   }
 }

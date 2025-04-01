@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,28 +15,54 @@ class AuthorRepository extends GetxController {
   static AuthorRepository get instance => Get.find();
 
   final _db = FirebaseFirestore.instance;
+  final supabase = Supabase.instance.client;
 
   Future<void> uploadDummyAuthors(List<AuthorModel> authors) async {
     try {
-      final supabase = Supabase.instance.client;
+      const int batchLimit = 500;
+      List<List<AuthorModel>> authorBatches = [];
 
-      for (final author in authors) {
-        // Upload photo
-        String photoUrl = author.photoUrl;
-        if (author.photoUrl.isNotEmpty) {
-          final path =
-              'author-photos/${DateTime.now().millisecondsSinceEpoch}.png';
-          final file = await XFile(author.photoUrl).readAsBytes();
-          await supabase.storage.from('images').uploadBinary(path, file);
-          photoUrl = supabase.storage.from('images').getPublicUrl(path);
-        }
+      for (int i = 0; i < authors.length; i += batchLimit) {
+        authorBatches.add(
+          authors.sublist(
+            i,
+            i + batchLimit > authors.length ? authors.length : i + batchLimit,
+          ),
+        );
+      }
 
-        // Create author with updated photo URL
-        final updatedAuthor = author.copyWith(photoUrl: photoUrl);
-        await _db
-            .collection('Authors')
-            .doc(author.id)
-            .set(updatedAuthor.toJson());
+      for (final batchAuthors in authorBatches) {
+        WriteBatch batch = _db.batch();
+
+        final List<Future<void>> uploadTasks =
+            batchAuthors.map((author) async {
+              String photoUrl = author.photoUrl ?? '';
+
+              if (photoUrl.isNotEmpty && !photoUrl.startsWith('http')) {
+                try {
+                  final path =
+                      'author-photos/${DateTime.now().millisecondsSinceEpoch}.png';
+                  final fileBytes = await XFile(photoUrl).readAsBytes();
+
+                  await supabase.storage
+                      .from('images')
+                      .uploadBinary(path, fileBytes);
+                  photoUrl = supabase.storage.from('images').getPublicUrl(path);
+                } catch (e) {
+                  if (kDebugMode) {
+                    print(
+                      'Error uploading image for ${author.name}: ${e.toString()}',
+                    );
+                  }
+                }
+              }
+
+              final docRef = _db.collection('authors').doc(author.id);
+              batch.set(docRef, author.toJson()..['photoUrl'] = photoUrl);
+            }).toList();
+
+        await Future.wait(uploadTasks);
+        await batch.commit();
       }
 
       LLoaders.successSnackBar(title: 'Success', message: 'Authors uploaded');
@@ -48,9 +75,10 @@ class AuthorRepository extends GetxController {
     }
   }
 
-  Future<AuthorModel> getAuthorById(String authorId) async {
+  Future<AuthorModel?> getAuthorById(String authorId) async {
     try {
-      final snapshot = await _db.collection('Authors').doc(authorId).get();
+      final snapshot = await _db.collection('authors').doc(authorId).get();
+      if (!snapshot.exists) return null;
       return AuthorModel.fromSnapshot(snapshot);
     } on FirebaseException catch (e) {
       throw LFirebaseException(e.code).message;
@@ -63,14 +91,14 @@ class AuthorRepository extends GetxController {
     try {
       final snapshot =
           await _db
-              .collection('Books')
+              .collection('books')
               .where('authorId', isEqualTo: authorId)
               .get();
       return snapshot.docs.map((doc) => BookModel.fromSnapshot(doc)).toList();
     } on FirebaseException catch (e) {
       throw LFirebaseException(e.code).message;
     } catch (e) {
-      throw 'Error fetching author books: ${e.toString()}';
+      return [];
     }
   }
 }

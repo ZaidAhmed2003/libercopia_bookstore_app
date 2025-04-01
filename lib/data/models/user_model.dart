@@ -3,7 +3,7 @@ import 'package:libercopia_bookstore_app/utils/formatters/formatter.dart';
 
 /// Model For representing User
 class UserModel {
-  // Keep those value final which you don't want to update
+  // Keep those values final which you don't want to update
   final String id;
   String firstName;
   String lastName;
@@ -11,6 +11,7 @@ class UserModel {
   final String email;
   String phoneNumber;
   String profilePicture;
+  bool isAdmin; // ✅ Added admin flag
 
   // Constructor For Model
   UserModel({
@@ -21,6 +22,7 @@ class UserModel {
     required this.email,
     required this.phoneNumber,
     required this.profilePicture,
+    this.isAdmin = false, // Default: false
   });
 
   /// Helper Function To get Full Name
@@ -30,20 +32,18 @@ class UserModel {
   String get formattedPhoneNumber => LFormatter.formatPhoneNumber(phoneNumber);
 
   /// Static Function To split Full Name into First & Last Name
-  static List<String> nameParts(fullName) => fullName.split(" ");
+  static List<String> nameParts(String fullName) => fullName.split(" ");
 
   /// Static Function to generate username from the full name
-  static String generateUsername(fullName) {
+  static String generateUsername(String fullName) {
     List<String> nameParts = fullName.split(" ");
     String firstName = nameParts[0].toLowerCase();
     String lastName = nameParts.length > 1 ? nameParts[1].toLowerCase() : '';
 
-    String camelCaseUsername = '$firstName$lastName';
-    String usernameWithPrefix = 'cwt_$camelCaseUsername';
-    return usernameWithPrefix;
+    return 'cwt_$firstName$lastName';
   }
 
-  /// Static Function to create empty UserModel
+  /// Static Function to create an empty UserModel
   static UserModel empty() => UserModel(
     id: '',
     firstName: '',
@@ -52,6 +52,7 @@ class UserModel {
     email: '',
     phoneNumber: '',
     profilePicture: '',
+    isAdmin: false,
   );
 
   /// Convert Model To Json Structure for Storing Data in Firestore
@@ -63,14 +64,15 @@ class UserModel {
     'email': email,
     'phoneNumber': phoneNumber,
     'profilePicture': profilePicture,
+    'isAdmin': isAdmin,
   };
 
-  /// Factory method to create a userModel from a firebase document snapshot
+  /// Factory method to create a UserModel from a Firestore document snapshot
   factory UserModel.fromSnapshot(
     DocumentSnapshot<Map<String, dynamic>> document,
   ) {
-    if (document.data() != null) {
-      final data = document.data()!;
+    final data = document.data();
+    if (data != null) {
       return UserModel(
         id: document.id,
         firstName: data['firstName'] ?? '',
@@ -79,6 +81,7 @@ class UserModel {
         email: data['email'] ?? '',
         phoneNumber: data['phoneNumber'] ?? '',
         profilePicture: data['profilePicture'] ?? '',
+        isAdmin: data['isAdmin'] ?? false,
       );
     } else {
       return UserModel.empty();

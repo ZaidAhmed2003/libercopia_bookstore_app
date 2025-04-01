@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:libercopia_bookstore_app/common/widgets/icons/l_circular_icon.dart';
 
+import '../../../../data/models/book_model.dart';
 import '../../../../features/shop/controllers/wishlist_controller.dart';
+import '../../../widgets/icons/l_circular_icon.dart';
 
 class LFavouriteIcon extends StatelessWidget {
-  const LFavouriteIcon({super.key});
+  final BookModel book;
+
+  const LFavouriteIcon({super.key, required this.book});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,17 @@ class LFavouriteIcon extends StatelessWidget {
     return Positioned(
       top: 0,
       right: 0,
-      child: const LCircularIcon(icon: Iconsax.heart5, color: Colors.red),
+      child: Obx(() {
+        final isInWishlist = controller.wishlistBookIds.contains(book.id);
+
+        return GestureDetector(
+          onTap: () => controller.toggleWishlist(book.id),
+          child: LCircularIcon(
+            icon: isInWishlist ? Iconsax.heart5 : Iconsax.heart,
+            color: isInWishlist ? Colors.red : Colors.grey,
+          ),
+        );
+      }),
     );
   }
 }

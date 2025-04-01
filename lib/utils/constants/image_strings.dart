@@ -279,4 +279,10 @@ class LImages {
   // books
   static const String bookCover1 = "assets/images/content/book-1.jpg";
   static const String bookCover2 = "assets/images/content/book-2.jpg";
+  static const String bookCover3 = "assets/images/content/book-3.jpg";
+  static const String bookCover4 = "assets/images/content/book-4.jpg";
+  static const String bookCover5 = "assets/images/content/book-5.jpeg";
+  static const String bookCover6 = "assets/images/content/book-6.jpg";
+  static const String bookCover7 = "assets/images/content/book-7.jpeg";
+  static const String bookCover8 = "assets/images/content/book-8.jpg";
 }

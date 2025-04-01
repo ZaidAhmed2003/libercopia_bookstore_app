@@ -5,6 +5,7 @@ import 'package:libercopia_bookstore_app/features/shop/screens/home/home.dart';
 import 'package:libercopia_bookstore_app/utils/helpers/helper_functions.dart';
 
 import 'features/personalization/screens/settings/settings.dart';
+import 'features/shop/screens/categories/categories.dart';
 import 'features/shop/screens/wishlist/wishlist.dart';
 
 class NavigationMenu extends StatelessWidget {
@@ -50,7 +51,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const HomeScreen(),
-    Container(color: Colors.red),
+    const CategoriesScreen(),
     const WishlistScreen(),
     const SettingsScreen(),
   ];

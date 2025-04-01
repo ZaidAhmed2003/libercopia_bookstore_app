@@ -1,64 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:libercopia_bookstore_app/data/repositories/authentication/authentication_repository.dart';
 
-import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../models/order_model.dart';
 
 class OrderRepository extends GetxController {
   static OrderRepository get instance => Get.find();
 
   final _db = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
 
-  Future<void> createOrder(OrderModel order) async {
+  /// get all orders related to current user
+  Future<List<OrderModel>> fetchUserOrders() async {
     try {
-      await _db.runTransaction((transaction) async {
-        // Create order
-        final orderRef = _db.collection('orders').doc(order.id);
-        transaction.set(orderRef, order.toJson());
+      // Get the current user's ID
+      final userId = AuthenticationRepository.instance.authUser!.uid;
+      // Check if the user ID is not empty
+      if (userId.isEmpty) {
+        throw 'Unable to find user information, please try again later';
+      }
 
-        // Update book stock
-        for (final item in order.items) {
-          final bookRef = _db.collection('Books').doc(item.bookId);
-          transaction.update(bookRef, {
-            'stock': FieldValue.increment(-item.quantity),
-            'updatedAt': FieldValue.serverTimestamp(),
-          });
-        }
-
-        // Clear cart
-        transaction.delete(_db.collection('carts').doc(_auth.currentUser?.uid));
-      });
-    } on FirebaseException catch (e) {
-      throw LFirebaseException(e.code).message;
+      final result =
+          await _db.collection('users').doc(userId).collection('orders').get();
+      return result.docs
+          .map((snapshot) => OrderModel.fromSnapshot(snapshot))
+          .toList();
     } catch (e) {
-      throw 'Failed to create order: ${e.toString()}';
+      throw 'Something went wrong while fetching orders';
     }
   }
 
-  Stream<List<OrderModel>> getUserOrders() {
-    return _db
-        .collection('orders')
-        .where('userId', isEqualTo: _auth.currentUser?.uid)
-        .orderBy('orderDate', descending: true)
-        .snapshots()
-        .map(
-          (snapshot) =>
-              snapshot.docs.map((doc) => OrderModel.fromSnapshot(doc)).toList(),
-        );
-  }
-
-  Future<void> cancelOrder(String orderId) async {
+  /// Store a new User Order
+  Future<void> saveOrder(OrderModel order, String userId) async {
     try {
-      await _db.collection('orders').doc(orderId).update({
-        'status': 'cancelled',
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-    } on FirebaseException catch (e) {
-      throw LFirebaseException(e.code).message;
+      await _db
+          .collection('users')
+          .doc(userId)
+          .collection('orders')
+          .add(order.toJson());
     } catch (e) {
-      throw 'Failed to cancel order: ${e.toString()}';
+      throw 'Something went wrong while saving order';
     }
   }
 }
