@@ -16,7 +16,7 @@ class HomeCategories extends StatelessWidget {
     return Obx(() {
       if (categoryController.isLoading.value) return const CategoryShimmer();
 
-      if (categoryController.featuredCategories.isEmpty) {
+      if (categoryController.allCategories.isEmpty) {
         return Center(
           child: Text(
             'No Categories Found',
@@ -30,11 +30,12 @@ class HomeCategories extends StatelessWidget {
       return SizedBox(
         height: 85,
         child: ListView.builder(
-          itemCount: categoryController.featuredCategories.length,
+          itemCount: categoryController.allCategories.length,
           scrollDirection: Axis.horizontal,
+
           shrinkWrap: true,
           itemBuilder: (_, index) {
-            final category = categoryController.featuredCategories[index];
+            final category = categoryController.allCategories[index];
 
             return LVerticalImageText(
               image: category.image,

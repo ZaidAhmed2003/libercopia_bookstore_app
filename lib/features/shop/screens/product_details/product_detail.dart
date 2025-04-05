@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:libercopia_bookstore_app/common/widgets/appbar/appbar.dart';
 import 'package:libercopia_bookstore_app/data/models/book_model.dart';
-import 'package:libercopia_bookstore_app/features/shop/screens/home/widgets/cart_counter_icon.dart';
+import 'package:libercopia_bookstore_app/features/shop/screens/product_details/widgets/product_detail_image.dart';
+import 'package:libercopia_bookstore_app/features/shop/screens/product_details/widgets/product_meta_data.dart';
+import 'package:libercopia_bookstore_app/features/shop/screens/product_details/widgets/rating_share.dart';
+
+import '../../../../utils/constants/sizes.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final BookModel book; // Store the book instance
@@ -11,39 +14,31 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: LAppbar(
-        title: Text(book.category.name),
-        showBackArrow: true,
-        actions: [LCartCounterIcon()],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            /// 1- Product Image
+            LProductDetailImage(book: book), // Pass book to image widget
+            /// 2- Product Details
+            Padding(
+              padding: const EdgeInsets.only(
+                right: LSizes.defaultSpace,
+                left: LSizes.defaultSpace,
+                bottom: LSizes.defaultSpace,
+              ),
+              child: Column(
+                children: [
+                  /// Rating and Share Button
+                  LRatingAndShare(book: book), // Pass book
+                  /// Price, Title, Stock & Author
+                  LProductMetaData(book: book), // Pass book
+                  /// TODO: Add Checkout, Description, Reviews
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
-
-    // return Scaffold(
-    //   body: SingleChildScrollView(
-    //     child: Column(
-    //       children: [
-    //         /// 1- Product Image
-    //         LProductDetailImage(book: book), // Pass book to image widget
-    //         /// 2- Product Details
-    //         Padding(
-    //           padding: const EdgeInsets.only(
-    //             right: LSizes.defaultSpace,
-    //             left: LSizes.defaultSpace,
-    //             bottom: LSizes.defaultSpace,
-    //           ),
-    //           child: Column(
-    //             children: [
-    //               /// Rating and Share Button
-    //               LRatingAndShare(book: book), // Pass book
-    //               /// Price, Title, Stock & Author
-    //               LProductMetaData(book: book), // Pass book
-    //               /// TODO: Add Checkout, Description, Reviews
-    //             ],
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }

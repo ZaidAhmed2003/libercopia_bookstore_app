@@ -19,7 +19,6 @@ class ListCategoriesScreen extends StatelessWidget {
           'Categories',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
-        showBackArrow: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -35,7 +34,11 @@ class ListCategoriesScreen extends StatelessWidget {
               itemBuilder: (_, index) {
                 final category = controller.categories[index];
                 return ListTile(
-                  leading: Image.network(category.image),
+                  leading:
+                      category.image != null
+                          ? SizedBox(child: Image.network(category.image))
+                          : const Icon(Icons.image),
+
                   title: Text(category.name),
                   subtitle: Text(
                     category.isFeatured

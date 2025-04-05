@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:libercopia_bookstore_app/admin/screens/authors/list_authors.dart';
+import 'package:libercopia_bookstore_app/admin/screens/books/list_books.dart';
+import 'package:libercopia_bookstore_app/admin/screens/categories/list_categories.dart';
 
 import '../features/personalization/screens/settings/settings.dart';
 import '../utils/helpers/helper_functions.dart';
-import 'features/shop/screens/authors/list_authors.dart';
-import 'features/shop/screens/books/list_books.dart';
-import 'features/shop/screens/categories/list_categories.dart';
 
 class AdminNavigationMenu extends StatelessWidget {
   const AdminNavigationMenu({super.key});

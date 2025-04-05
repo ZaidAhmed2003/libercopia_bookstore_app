@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:libercopia_bookstore_app/utils/constants/image_strings.dart';
 
-import '../../../../data/models/category_model.dart';
-import '../../../../utils/helpers/image_upload_helper.dart';
-import '../../../../utils/helpers/network_manager.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
-import '../../../../utils/popups/loaders.dart';
-import '../../../data/repositories/admin_category_repository.dart';
+import '../../data/models/category_model.dart';
+import '../../utils/helpers/network_manager.dart';
+import '../../utils/popups/full_screen_loader.dart';
+import '../../utils/popups/loaders.dart';
+import '../repositories/admin_category_repository.dart';
+import '../utils/image_upload_helper.dart';
 
 class AdminCategoryController extends GetxController {
   static AdminCategoryController get instance => Get.find();
@@ -47,13 +47,12 @@ class AdminCategoryController extends GetxController {
     try {
       // Start Loading
       LFullScreenLoader.openLoadingDialog(
-        'We are processing your information...',
+        'Adding Category',
         LImages.docerAnimation,
       );
 
       // Check Internet Connectivity
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
+      if (!await NetworkManager.instance.isConnected()) {
         LFullScreenLoader.stopLoading();
         return;
       }
@@ -65,9 +64,15 @@ class AdminCategoryController extends GetxController {
       }
 
       // Upload image if available
-      String imageUrl = '';
-      if (imagePath.value.isNotEmpty) {
-        imageUrl = await ImageUploadHelper.uploadImage(
+      String? imageUrl = '';
+      if (imagePath.value.isEmpty) {
+        LLoaders.errorSnackBar(
+          title: 'Error',
+          message: 'Please upload an image.',
+        );
+        return;
+      } else {
+        imageUrl = await SupabaseHelper.uploadImageToSupabase(
           imagePath.value,
           'category-images',
         );
@@ -76,8 +81,8 @@ class AdminCategoryController extends GetxController {
       // Create category model
       final category = CategoryModel(
         id: '',
-        name: name.text,
-        image: imageUrl,
+        name: name.text.trim(),
+        image: imageUrl ?? '',
         isFeatured: false,
         parentId: '',
         createdAt: DateTime.now(),
@@ -86,16 +91,14 @@ class AdminCategoryController extends GetxController {
       await _categoryRepository.createCategory(category);
       getCategories();
 
-      // Reset form and image path
-      name.clear();
-      imagePath.value = '';
-
+      LFullScreenLoader.stopLoading();
       LLoaders.successSnackBar(
-        title: 'Congratulations',
-        message: 'Your category has been created successfully.',
+        title: 'Success',
+        message: 'Address added successfully',
       );
 
-      // Get Back
+      refreshData.toggle();
+      resetFormFields();
       Get.back();
     } catch (e) {
       LLoaders.errorSnackBar(title: 'Error', message: 'Failed to add category');
@@ -123,9 +126,11 @@ class AdminCategoryController extends GetxController {
     try {
       bool shouldDelete = await _showDeleteDialog();
       if (shouldDelete) {
+        // Start Loading
         await _categoryRepository.deleteCategory(categoryId);
+        await SupabaseHelper.deleteImageFromSupabase(categoryId);
         getCategories();
-        LLoaders.successSnackBar(title: 'Success', message: 'Category deleted');
+        LLoaders.customToast(message: 'Category deleted');
       }
     } catch (e) {
       LLoaders.errorSnackBar(
@@ -168,14 +173,15 @@ class AdminCategoryController extends GetxController {
     }
   }
 
-  // Refresh categories data
-  Future<void> refreshCategories() async {
-    await getCategories();
-  }
-
   @override
   void onInit() {
     super.onInit();
     getCategories();
+  }
+
+  void resetFormFields() {
+    name.clear();
+    imagePath.value = '';
+    addCategoryFormKey.currentState!.reset();
   }
 }

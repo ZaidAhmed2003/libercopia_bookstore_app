@@ -13,12 +13,7 @@ class GeneralBindings extends Bindings {
   @override
   Future<void> dependencies() async {
     Get.put(NetworkManager());
-
-    final userDetails = await _userRepo.fetchUserDetails();
-
-    if (userDetails.isAdmin == false) {
-      Get.put(AddressController());
-      Get.put(CheckoutController());
-    }
+    Get.put(AddressController());
+    Get.put(CheckoutController());
   }
 }

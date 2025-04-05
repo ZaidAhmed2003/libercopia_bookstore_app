@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:libercopia_bookstore_app/admin/features/shop/screens/categories/widgets/add_category_form.dart';
+import 'package:libercopia_bookstore_app/admin/screens/categories/widgets/add_category_form.dart';
 
 import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../../../utils/constants/sizes.dart';

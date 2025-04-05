@@ -7,7 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../data/models/author_model.dart';
 import '../../../data/models/book_model.dart';
 import '../../../data/models/category_model.dart';
-import '../../../utils/popups/loaders.dart';
+import '../../utils/popups/loaders.dart';
 
 class AdminBookRepository extends GetxController {
   static AdminBookRepository get instance => Get.find();
@@ -61,6 +61,7 @@ class AdminBookRepository extends GetxController {
   }
 
   // Create Book (Admin Only)
+  // Create Book (Admin Only)
   Future<void> createBook(BookModel book) async {
     try {
       final supabase = Supabase.instance.client;
@@ -87,10 +88,17 @@ class AdminBookRepository extends GetxController {
       }
 
       final updatedBook = book.toJson()..['imageUrls'] = imageUrls;
-      final docRef = _db.collection('books').doc(book.id);
-      batch.set(docRef, updatedBook);
 
-      await batch.commit();
+      // Use doc() to auto-generate the ID for a new book if it's not provided
+      final docRef =
+          _db
+              .collection('books')
+              .doc(); // No need to use book.id if auto-generating
+
+      batch.set(docRef, updatedBook); // Add the book document to the batch
+
+      await batch.commit(); // Commit the batch operation
+
       LLoaders.successSnackBar(
         title: 'Success',
         message: 'Book created successfully',
@@ -140,17 +148,28 @@ class AdminBookRepository extends GetxController {
     }
   }
 
-  // Delete Book (Admin Only)
+  // Delete Book (Admin Only) and remove from all user wishlists
   Future<void> deleteBook(String bookId) async {
     try {
-      final docRef = _db.collection('books').doc(bookId);
-      await docRef.delete();
-      LLoaders.successSnackBar(
-        title: 'Success',
-        message: 'Book deleted successfully',
-      );
+      // Delete the book document
+      await _db.collection('books').doc(bookId).delete();
+
+      // For each user, remove any wishlist document where the bookId matches
+      final usersSnapshot = await _db.collection('users').get();
+      for (var userDoc in usersSnapshot.docs) {
+        final wishlistSnapshot =
+            await _db
+                .collection('users')
+                .doc(userDoc.id)
+                .collection('wishlist')
+                .where('bookId', isEqualTo: bookId)
+                .get();
+        for (var wishlistDoc in wishlistSnapshot.docs) {
+          await wishlistDoc.reference.delete();
+        }
+      }
     } catch (e) {
-      throw 'Error deleting book: ${e.toString()}';
+      throw Exception('Failed to delete book: $e');
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:libercopia_bookstore_app/utils/local_storage/storage_utility.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
@@ -14,11 +15,12 @@ Future<void> main() async {
   final WidgetsBinding widgetsBinding =
       WidgetsFlutterBinding.ensureInitialized();
 
-  /// InitLocal Storage
-  await GetStorage.init();
-
   /// Await Native Splash
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  /// InitLocal Storage
+  await GetStorage.init();
+  await LLocalStorage.init('myBucket');
 
   /// Initialize Supabase
   await Supabase.initialize(

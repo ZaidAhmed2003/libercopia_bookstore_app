@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:libercopia_bookstore_app/admin/features/shop/controller/admin_category_controller.dart';
+import 'package:libercopia_bookstore_app/admin/controller/admin_category_controller.dart';
 
 import '../../../../../../utils/constants/sizes.dart';
 import '../../../../../../utils/validators/validation.dart';
@@ -45,8 +45,7 @@ class AddCategoryForm extends StatelessWidget {
                         ? ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            controller.imagePath.value,
-                            // File(controller.imagePath.value), // ✅ Convert String to File
+                            controller.imagePath.value.toString(),
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),

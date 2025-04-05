@@ -7,6 +7,7 @@ import 'package:libercopia_bookstore_app/utils/constants/sizes.dart';
 import 'package:libercopia_bookstore_app/utils/helpers/helper_functions.dart';
 
 import '../../../../features/shop/controllers/cart_controller.dart';
+import '../../../../features/shop/screens/cart/widgets/l_product_price_text.dart';
 import '../../../../features/shop/screens/product_details/product_detail.dart';
 
 class ProductCardVertical extends StatelessWidget {
@@ -73,7 +74,7 @@ class ProductCardVertical extends StatelessWidget {
                 width: double.infinity, // Ensure full width
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: LSizes.md,
+                    horizontal: LSizes.sm,
                     vertical: LSizes.sm,
                   ),
                   child: Column(
@@ -111,13 +112,12 @@ class ProductCardVertical extends StatelessWidget {
                       ),
                       const Spacer(),
                       // Price at bottom
-                      Text(
-                        '\$${book.price.toStringAsFixed(2)}', // Format price with $ and 2 decimals
-                        style: TextStyle(
-                          fontSize: 21.98,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white, // Added text color
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          LProductPriceText(price: book.price.toString()),
+                          ProductAddToCartButton(book: book),
+                        ],
                       ),
                     ],
                   ),
@@ -222,7 +222,7 @@ class ProductAddToCartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartController = CartController.instance;
+    final cartController = Get.put(CartController());
 
     return InkWell(
       onTap: () {

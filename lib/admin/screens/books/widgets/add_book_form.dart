@@ -80,8 +80,9 @@ class AddBookForm extends StatelessWidget {
           // Category Dropdown
           DropdownButtonFormField<CategoryModel>(
             value: controller.selectedCategory.value,
-            onChanged:
-                (category) => controller.selectedCategory.value = category!,
+            onChanged: (category) {
+              controller.selectedCategory.value = category!;
+            },
             items:
                 controller.allCategories.map((category) {
                   return DropdownMenuItem<CategoryModel>(
@@ -101,7 +102,9 @@ class AddBookForm extends StatelessWidget {
           // Author Dropdown
           DropdownButtonFormField<AuthorModel>(
             value: controller.selectedAuthor.value,
-            onChanged: (author) => controller.selectedAuthor.value = author!,
+            onChanged: (author) {
+              controller.selectedAuthor.value = author!;
+            },
             items:
                 controller.allAuthors.map((author) {
                   return DropdownMenuItem<AuthorModel>(
@@ -118,10 +121,36 @@ class AddBookForm extends StatelessWidget {
           ),
           const SizedBox(height: LSizes.spaceBtwItems),
 
-          // Image Upload Button (For multiple images)
-          ElevatedButton(
-            onPressed: () => controller.uploadImages(),
-            child: Text('Upload Book Images'),
+          // Image Picker
+          GestureDetector(
+            onTap: () => controller.pickImage(),
+            child: Obx(
+              () => Container(
+                height: 150,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child:
+                    controller.imagePath.value.isNotEmpty
+                        ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            controller.imagePath.value,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        )
+                        : const Center(
+                          child: Icon(
+                            Iconsax.gallery,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        ),
+              ),
+            ),
           ),
           const SizedBox(height: LSizes.spaceBtwItems),
 
@@ -130,7 +159,7 @@ class AddBookForm extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () => controller.createBook(),
-              child: Text('Add Book'),
+              child: const Text('Add Book'),
             ),
           ),
         ],

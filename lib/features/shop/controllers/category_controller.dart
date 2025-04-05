@@ -32,7 +32,7 @@ class CategoryController extends GetxController {
       featuredCategories.assignAll(
         allCategories
             .where(
-              (category) => category.isFeatured && category.parentId.isEmpty,
+              (category) => !category.isFeatured && category.parentId.isEmpty,
             )
             .take(8)
             .toList(),

@@ -15,6 +15,7 @@ class CartController extends GetxController {
   RxList<CartItemModel> cartItems = <CartItemModel>[].obs;
 
   CartController() {
+    /// when CartController created it calls loadCartItems() method for retrieving items from the storage.
     loadCartItems();
   }
 
